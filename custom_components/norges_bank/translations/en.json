@@ -40,5 +40,11 @@
     "error": {
       "select_currency": "Select at least one currency."
     }
+  },
+  "issues": {
+    "removed_currencies": {
+      "title": "Currencies are no longer available",
+      "description": "Norges Bank no longer provides the following selected currencies: {currencies}. Open **Settings > Devices & services > Norges Bank > Configure** and select the currencies that should remain in use."
+    }
   }
 }

@@ -12,6 +12,7 @@ class CurrencyInfo:
     code: str
     name: str
     unit_multiplier: int = 0
+    decimal_places: int | None = None
 
     @property
     def base_amount(self) -> int:

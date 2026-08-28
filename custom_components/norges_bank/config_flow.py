@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.config_entries import (
+    ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
     OptionsFlowWithReload,
@@ -62,9 +62,7 @@ class NorgesBankConfigFlow(ConfigFlow, domain=DOMAIN):
         except NorgesBankApiError:
             return self.async_abort(reason="cannot_connect")
 
-        available_defaults = [
-            code for code in DEFAULT_CURRENCIES if code in currencies
-        ]
+        available_defaults = [code for code in DEFAULT_CURRENCIES if code in currencies]
 
         if user_input is not None:
             selected = list(user_input[CONF_CURRENCIES])
@@ -102,7 +100,7 @@ class NorgesBankConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry,
+        _config_entry: ConfigEntry,
     ) -> OptionsFlowWithReload:
         """Return the options flow."""
         return NorgesBankOptionsFlow()
@@ -123,12 +121,13 @@ class NorgesBankOptionsFlow(OptionsFlowWithReload):
         except NorgesBankApiError:
             return self.async_abort(reason="cannot_connect")
 
-        current = list(
+        configured = list(
             self.config_entry.options.get(
                 CONF_CURRENCIES,
                 self.config_entry.data.get(CONF_CURRENCIES, DEFAULT_CURRENCIES),
             )
         )
+        current = [code for code in configured if code in currencies]
 
         if user_input is not None:
             selected = list(user_input[CONF_CURRENCIES])

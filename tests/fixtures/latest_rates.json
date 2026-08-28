@@ -1,0 +1,45 @@
+{
+  "data": {
+    "dataSets": [
+      {
+        "series": {
+          "0:0:0:0": {"attributes": [0, 0, 0, 0], "observations": {"0": ["145.52"]}},
+          "0:1:0:0": {"attributes": [1, 0, 1, 0], "observations": {"0": ["9.3405"]}},
+          "0:2:0:0": {"attributes": [1, 0, 1, 0], "observations": {"0": ["12.686"]}},
+          "0:3:0:0": {"attributes": [1, 0, 1, 0], "observations": {"0": ["10.877"]}},
+          "0:4:0:0": {"attributes": [0, 0, 0, 0], "observations": {"0": ["98.14"]}}
+        }
+      }
+    ],
+    "structure": {
+      "dimensions": {
+        "series": [
+          {"id": "FREQ", "values": [{"id": "B", "name": "Virkedag"}]},
+          {
+            "id": "BASE_CUR",
+            "values": [
+              {"id": "DKK", "name": "Danske kroner"},
+              {"id": "USD", "name": "Amerikanske dollar"},
+              {"id": "GBP", "name": "Britiske pund"},
+              {"id": "EUR", "name": "Euro"},
+              {"id": "SEK", "name": "Svenske kroner"}
+            ]
+          },
+          {"id": "QUOTE_CUR", "values": [{"id": "NOK", "name": "Norske kroner"}]},
+          {"id": "TENOR", "values": [{"id": "SP", "name": "Spot"}]}
+        ],
+        "observation": [
+          {"id": "TIME_PERIOD", "values": [{"id": "2026-08-27", "name": "2026-08-27"}]}
+        ]
+      },
+      "attributes": {
+        "series": [
+          {"id": "DECIMALS", "values": [{"id": "2"}, {"id": "4"}]},
+          {"id": "CALCULATED", "values": [{"id": "false"}]},
+          {"id": "UNIT_MULT", "values": [{"id": "2"}, {"id": "0"}]},
+          {"id": "COLLECTION", "values": [{"id": "C"}]}
+        ]
+      }
+    }
+  }
+}

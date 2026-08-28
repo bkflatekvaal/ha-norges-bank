@@ -14,6 +14,9 @@ Custom Home Assistant integration for exchange rates from Norges Bank's open EXR
 - Uses the latest available business-day observation and keeps the observation date as an attribute.
 - Currency selection can be changed later through **Configure**.
 - Polls every 6 hours.
+- Uses Norges Bank's published decimal precision as the initial display precision.
+- Provides downloadable diagnostics from the integration menu.
+- Creates a repair notification if a selected currency disappears from the API.
 
 Example entity:
 
@@ -37,6 +40,17 @@ Restart Home Assistant, then go to:
 
 **Settings → Devices & services → Add integration → Norges Bank**
 
+## Run tests
+
+Home Assistant 2026.8 requires Python 3.14.2 or newer.
+
+```shell
+python -m pip install -e ".[test]"
+pytest
+ruff check .
+ruff format --check .
+```
+
 ## API endpoints
 
 Metadata:
@@ -46,18 +60,5 @@ Metadata:
 Rates are requested as one combined series, for example:
 
 `https://data.norges-bank.no/api/data/EXR/B.EUR+GBP+USD.NOK.SP?...`
-
-## Notes for Codex / next iteration
-
-Good next steps:
-
-1. Run Home Assistant `hassfest` and `pytest` against the target HA version.
-2. Verify the exact SDMX `UNIT_MULT` attribute resolution against live responses for DKK/SEK/JPY.
-3. Add tests with captured, sanitized API fixtures.
-4. Consider using the SDMX `DECIMALS` metadata to control suggested display precision.
-5. Add diagnostics.
-6. Add repairs if the API removes a previously selected currency.
-7. Add HACS validation workflow and hassfest workflow before publishing.
-8. Add brand assets only after repository naming/domain are final.
 
 The parser intentionally resolves SDMX dimensions and attributes by their IDs rather than relying on fixed positions where possible.

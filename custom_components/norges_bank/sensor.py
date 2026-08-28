@@ -7,7 +7,6 @@ from typing import Any
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -25,8 +24,6 @@ from .const import (
 from .coordinator import NorgesBankCoordinator
 from .models import CurrencyInfo
 
-# Use specific MDI symbols where there is a well-known dedicated icon.
-# All others get a generic cash icon, or cash-100 for 100-unit quotations.
 CURRENCY_ICONS: dict[str, str] = {
     "EUR": "mdi:currency-eur",
     "USD": "mdi:currency-usd",
@@ -47,7 +44,6 @@ async def async_setup_entry(
 ) -> None:
     """Set up Norges Bank sensors."""
     coordinator = entry.runtime_data
-
     async_add_entities(
         NorgesBankExchangeRateSensor(coordinator, coordinator.currencies[code])
         for code in coordinator.selected_currencies
@@ -56,25 +52,23 @@ async def async_setup_entry(
 
 
 class NorgesBankExchangeRateSensor(
-    CoordinatorEntity[NorgesBankCoordinator],
-    SensorEntity,
+    CoordinatorEntity[NorgesBankCoordinator], SensorEntity
 ):
     """Latest Norges Bank exchange rate."""
 
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
     _attr_native_unit_of_measurement = "NOK"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(
-        self,
-        coordinator: NorgesBankCoordinator,
-        currency: CurrencyInfo,
+        self, coordinator: NorgesBankCoordinator, currency: CurrencyInfo
     ) -> None:
+        """Initialize an exchange-rate sensor."""
         super().__init__(coordinator)
         self.currency = currency
-
         self._attr_unique_id = f"{DOMAIN}_{currency.code.lower()}"
         self._attr_name = f"{currency.name}, {currency.code}"
+        self._attr_suggested_display_precision = currency.decimal_places
         self._attr_icon = CURRENCY_ICONS.get(
             currency.code,
             "mdi:cash-100" if currency.base_amount == 100 else "mdi:cash",
@@ -95,7 +89,6 @@ class NorgesBankExchangeRateSensor(
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return useful source metadata."""
         rate = self.coordinator.data.get(self.currency.code)
-
         return {
             ATTR_CURRENCY: self.currency.code,
             ATTR_CURRENCY_NAME: self.currency.name,
@@ -104,14 +97,3 @@ class NorgesBankExchangeRateSensor(
             ATTR_OBSERVATION_DATE: rate.observation_date if rate else None,
             ATTR_SOURCE: SOURCE_NAME,
         }
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return one logical device for the service."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, DOMAIN)},
-            name="Norges Bank – Valutakurser",
-            manufacturer="Norges Bank",
-            model="Exchange Rates (EXR)",
-            configuration_url="https://data.norges-bank.no/",
-        )

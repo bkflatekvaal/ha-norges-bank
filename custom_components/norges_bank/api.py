@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
 import logging
+from datetime import date, timedelta
 from typing import Any
 
 from aiohttp import ClientError, ClientSession
@@ -96,11 +96,13 @@ class NorgesBankApi:
                 series_data.get("attributes", []),
             )
             unit_multiplier = _safe_int(attributes.get("UNIT_MULT", {}).get("id"), 0)
+            decimal_places = _optional_int(attributes.get("DECIMALS", {}).get("id"))
 
             currencies[code] = CurrencyInfo(
                 code=code,
                 name=name,
                 unit_multiplier=unit_multiplier,
+                decimal_places=decimal_places,
             )
 
         if not currencies:
@@ -187,13 +189,19 @@ class NorgesBankApi:
             if not observations:
                 continue
 
-            latest_index = max((int(index) for index in observations), default=None)
-            if latest_index is None:
+            valid_observations: list[tuple[int, list[Any]]] = []
+            for raw_index, observation in observations.items():
+                try:
+                    index = int(raw_index)
+                except (TypeError, ValueError):
+                    continue
+                if observation and observation[0] is not None:
+                    valid_observations.append((index, observation))
+
+            if not valid_observations:
                 continue
 
-            observation = observations[str(latest_index)]
-            if not observation or observation[0] is None:
-                continue
+            latest_index, observation = max(valid_observations)
 
             try:
                 value = float(observation[0])
@@ -210,13 +218,13 @@ class NorgesBankApi:
                     structure.get("attributes", {}).get("series", []),
                     series_data.get("attributes", []),
                 )
-                unit_multiplier = _safe_int(
-                    attrs.get("UNIT_MULT", {}).get("id"), 0
-                )
+                unit_multiplier = _safe_int(attrs.get("UNIT_MULT", {}).get("id"), 0)
+                decimal_places = _optional_int(attrs.get("DECIMALS", {}).get("id"))
                 info = CurrencyInfo(
                     code=code,
                     name=str(base.get("name") or code),
                     unit_multiplier=unit_multiplier,
+                    decimal_places=decimal_places,
                 )
 
             result[code] = ExchangeRate(
@@ -263,3 +271,10 @@ def _safe_int(value: Any, default: int) -> int:
         return int(value)
     except (TypeError, ValueError):
         return default
+
+
+def _optional_int(value: Any) -> int | None:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None

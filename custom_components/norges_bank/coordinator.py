@@ -28,6 +28,7 @@ class NorgesBankCoordinator(DataUpdateCoordinator[dict[str, ExchangeRate]]):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=DOMAIN,
             update_interval=UPDATE_INTERVAL,
         )
@@ -42,7 +43,7 @@ class NorgesBankCoordinator(DataUpdateCoordinator[dict[str, ExchangeRate]]):
             CONF_CURRENCIES,
             self.entry.data.get(CONF_CURRENCIES, DEFAULT_CURRENCIES),
         )
-        return list(configured)
+        return [code for code in configured if code in self.currencies]
 
     async def _async_update_data(self) -> dict[str, ExchangeRate]:
         try:
