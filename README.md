@@ -20,8 +20,8 @@ Custom Home Assistant integration for exchange rates from Norges Bank's open EXR
 
 Example entity:
 
-- `sensor.norges_bank_eur`
-- Friendly name: `Euro, EUR`
+- `sensor.exchange_rate_nok_eur`
+- Friendly name: `Exchange rate NOK/EUR` (localized by Home Assistant)
 - State: latest Norges Bank quotation
 - Unit: `NOK`
 - Attributes: currency, currency name, quote currency, base amount, observation date and source.
@@ -62,3 +62,7 @@ Rates are requested as one combined series, for example:
 `https://data.norges-bank.no/api/data/EXR/B.EUR+GBP+USD.NOK.SP?...`
 
 The parser intentionally resolves SDMX dimensions and attributes by their IDs rather than relying on fixed positions where possible.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

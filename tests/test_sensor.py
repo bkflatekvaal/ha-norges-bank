@@ -13,7 +13,12 @@ def test_sensor_preserves_published_quotation(currencies: dict, rates: dict) -> 
     sensor = NorgesBankExchangeRateSensor(coordinator, currencies["SEK"])
 
     assert sensor.has_entity_name
-    assert sensor.name == "Svenske kroner, SEK"
+    assert sensor.entity_id == "sensor.exchange_rate_nok_sek"
+    assert sensor.translation_key == "exchange_rate"
+    assert sensor.translation_placeholders == {
+        "base_currency": "SEK",
+        "quote_currency": "NOK",
+    }
     assert sensor.native_value == 105.2
     assert sensor.native_unit_of_measurement == "NOK"
     assert sensor.suggested_display_precision == 2

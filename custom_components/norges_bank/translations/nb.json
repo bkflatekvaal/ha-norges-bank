@@ -36,5 +36,12 @@
       "title": "Valutaer er ikke lenger tilgjengelige",
       "description": "Norges Bank tilbyr ikke lenger følgende valgte valutaer: {currencies}. Åpne **Innstillinger > Enheter og tjenester > Norges Bank > Konfigurer**, og velg valutaene som fortsatt skal brukes."
     }
+  },
+  "entity": {
+    "sensor": {
+      "exchange_rate": {
+        "name": "Valutakurs {quote_currency}/{base_currency}"
+      }
+    }
   }
 }

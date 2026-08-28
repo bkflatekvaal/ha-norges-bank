@@ -66,8 +66,13 @@ class NorgesBankExchangeRateSensor(
         """Initialize an exchange-rate sensor."""
         super().__init__(coordinator)
         self.currency = currency
+        self.entity_id = f"sensor.exchange_rate_nok_{currency.code.lower()}"
         self._attr_unique_id = f"{DOMAIN}_{currency.code.lower()}"
-        self._attr_name = f"{currency.name}, {currency.code}"
+        self._attr_translation_key = "exchange_rate"
+        self._attr_translation_placeholders = {
+            "base_currency": currency.code,
+            "quote_currency": QUOTE_CURRENCY,
+        }
         self._attr_suggested_display_precision = currency.decimal_places
         self._attr_icon = CURRENCY_ICONS.get(
             currency.code,
