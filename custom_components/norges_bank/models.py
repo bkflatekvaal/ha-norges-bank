@@ -27,3 +27,12 @@ class ExchangeRate:
     currency: CurrencyInfo
     value: float
     observation_date: str
+
+
+@dataclass(frozen=True, slots=True)
+class PolicyRate:
+    """Latest Norges Bank policy-rate observation."""
+
+    value: float
+    observation_date: str
+    decimal_places: int | None = None

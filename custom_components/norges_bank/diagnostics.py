@@ -44,4 +44,13 @@ async def async_get_config_entry_diagnostics(
             }
             for code, rate in coordinator.data.items()
         },
+        "policy_rate": (
+            {
+                "value": coordinator.policy_rate.value,
+                "observation_date": coordinator.policy_rate.observation_date,
+                "decimal_places": coordinator.policy_rate.decimal_places,
+            }
+            if coordinator.policy_rate is not None
+            else None
+        ),
     }

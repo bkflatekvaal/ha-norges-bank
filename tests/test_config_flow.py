@@ -8,14 +8,25 @@ from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.norges_bank.api import NorgesBankConnectionError
-from custom_components.norges_bank.const import CONF_CURRENCIES, DOMAIN
+from custom_components.norges_bank.const import (
+    CONF_CURRENCIES,
+    CONF_INCLUDE_POLICY_RATE,
+    DOMAIN,
+)
+from custom_components.norges_bank.models import PolicyRate
 
 
 async def test_user_flow(hass: HomeAssistant, currencies: dict) -> None:
     """A user can select currencies and create the sole entry."""
-    with patch(
-        "custom_components.norges_bank.config_flow.NorgesBankApi.async_get_currencies",
-        return_value=currencies,
+    with (
+        patch(
+            "custom_components.norges_bank.config_flow.NorgesBankApi.async_get_currencies",
+            return_value=currencies,
+        ),
+        patch(
+            "custom_components.norges_bank.config_flow.NorgesBankApi.async_get_policy_rate",
+            return_value=PolicyRate(4.25, "2026-08-26", 2),
+        ),
     ):
         result = await hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -26,11 +37,47 @@ async def test_user_flow(hass: HomeAssistant, currencies: dict) -> None:
             "custom_components.norges_bank.async_setup_entry", return_value=True
         ):
             result = await hass.config_entries.flow.async_configure(
-                result["flow_id"], {CONF_CURRENCIES: ["EUR", "SEK"]}
+                result["flow_id"],
+                {
+                    CONF_CURRENCIES: ["EUR", "SEK"],
+                    CONF_INCLUDE_POLICY_RATE: True,
+                },
             )
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["data"] == {CONF_CURRENCIES: ["EUR", "SEK"]}
+    assert result["data"] == {
+        CONF_CURRENCIES: ["EUR", "SEK"],
+        CONF_INCLUDE_POLICY_RATE: True,
+    }
+
+
+async def test_user_flow_policy_rate_connection_error(
+    hass: HomeAssistant, currencies: dict
+) -> None:
+    """Policy-rate data should be validated before configuration is saved."""
+    with (
+        patch(
+            "custom_components.norges_bank.config_flow.NorgesBankApi.async_get_currencies",
+            return_value=currencies,
+        ),
+        patch(
+            "custom_components.norges_bank.config_flow.NorgesBankApi.async_get_policy_rate",
+            side_effect=NorgesBankConnectionError,
+        ),
+    ):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_CURRENCIES: ["EUR"],
+                CONF_INCLUDE_POLICY_RATE: True,
+            },
+        )
+
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "cannot_connect"}
 
 
 async def test_user_flow_requires_currency(
@@ -95,7 +142,10 @@ async def test_options_flow(hass: HomeAssistant, currencies: dict) -> None:
         )
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert entry.options == {CONF_CURRENCIES: ["SEK"]}
+    assert entry.options == {
+        CONF_CURRENCIES: ["SEK"],
+        CONF_INCLUDE_POLICY_RATE: False,
+    }
 
 
 async def test_options_flow_requires_currency(

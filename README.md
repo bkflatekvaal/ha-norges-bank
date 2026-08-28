@@ -17,6 +17,7 @@ Custom Home Assistant integration for exchange rates from Norges Bank's open EXR
 - Uses Norges Bank's published decimal precision as the initial display precision.
 - Provides downloadable diagnostics from the integration menu.
 - Creates a repair notification if a selected currency disappears from the API.
+- Can optionally create a sensor for Norges Bank's policy rate (styringsrenten).
 
 Example entity:
 
@@ -26,19 +27,35 @@ Example entity:
 - Unit: `NOK`
 - Attributes: currency, currency name, quote currency, base amount, observation date and source.
 
-## Install for development
+Optional policy-rate entity:
 
-Copy:
+- `sensor.norges_bank_policy_rate`
+- Friendly name: `Policy rate` / `Styringsrente`
+- State: latest published policy rate
+- Unit: `%`
+- Attributes: instrument type (`KPRA`), tenor (`SD`), unit measure (`R`), collection (`E`), observation date and source.
 
-`custom_components/norges_bank`
+## Installation
 
-to:
+### HACS
 
-`<config>/custom_components/norges_bank`
+1. Install and configure [HACS](https://hacs.xyz/) if it is not already available.
+2. Open HACS in Home Assistant.
+3. Open the menu in the upper-right corner and select **Custom repositories**.
+4. Enter `https://github.com/bkflatekvaal/ha-norges-bank` as the repository URL.
+5. Select **Integration** as the category, then select **Add**.
+6. Find **Norges Bank** in HACS and select **Download**.
+7. Restart Home Assistant.
+8. Go to **Settings → Devices & services → Add integration**, search for **Norges Bank**, and select the currencies to monitor.
 
-Restart Home Assistant, then go to:
+### Manual installation
 
-**Settings → Devices & services → Add integration → Norges Bank**
+1. Download this repository from [GitHub](https://github.com/bkflatekvaal/ha-norges-bank).
+2. Copy `custom_components/norges_bank` into `<config>/custom_components/norges_bank` on the Home Assistant system.
+3. Restart Home Assistant.
+4. Go to **Settings → Devices & services → Add integration**, search for **Norges Bank**, and select the currencies to monitor.
+
+To update a manual installation, replace the existing `custom_components/norges_bank` directory with the directory from the new release and restart Home Assistant.
 
 ## Run tests
 

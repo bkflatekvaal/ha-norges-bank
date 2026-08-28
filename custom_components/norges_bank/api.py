@@ -12,10 +12,11 @@ from .const import (
     API_BASE,
     FREQUENCY,
     METADATA_URL,
+    POLICY_RATE_URL,
     QUOTE_CURRENCY,
     TENOR,
 )
-from .models import CurrencyInfo, ExchangeRate
+from .models import CurrencyInfo, ExchangeRate, PolicyRate
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -189,28 +190,10 @@ class NorgesBankApi:
             if not observations:
                 continue
 
-            valid_observations: list[tuple[int, list[Any]]] = []
-            for raw_index, observation in observations.items():
-                try:
-                    index = int(raw_index)
-                except (TypeError, ValueError):
-                    continue
-                if observation and observation[0] is not None:
-                    valid_observations.append((index, observation))
-
-            if not valid_observations:
+            latest = _latest_observation(observations, time_values)
+            if latest is None:
                 continue
-
-            latest_index, observation = max(valid_observations)
-
-            try:
-                value = float(observation[0])
-                time_value = time_values[latest_index]
-                observation_date = str(
-                    time_value.get("id") or time_value.get("name") or ""
-                )
-            except (ValueError, TypeError, IndexError):
-                continue
+            value, observation_date = latest
 
             info = None if currency_info is None else currency_info.get(code)
             if info is None:
@@ -234,6 +217,67 @@ class NorgesBankApi:
             )
 
         return result
+
+    async def async_get_policy_rate(self) -> PolicyRate:
+        """Fetch the latest policy-rate observation."""
+        payload = await self._get_json(POLICY_RATE_URL)
+
+        try:
+            data = payload["data"]
+            structure = data["structure"]
+            dataset = data["dataSets"][0]
+            dimensions = structure["dimensions"]
+            series_dimensions = dimensions["series"]
+            observation_dimensions = dimensions["observation"]
+            series = dataset["series"]
+        except (KeyError, IndexError, TypeError) as err:
+            raise NorgesBankResponseError("Invalid policy-rate response") from err
+
+        dim_ids = [dimension["id"] for dimension in series_dimensions]
+        dim_values = {
+            dimension["id"]: dimension.get("values", [])
+            for dimension in series_dimensions
+        }
+        time_dimension = next(
+            (
+                dimension
+                for dimension in observation_dimensions
+                if dimension.get("id") == "TIME_PERIOD"
+            ),
+            None,
+        )
+        if time_dimension is None:
+            raise NorgesBankResponseError("TIME_PERIOD dimension is missing")
+
+        for series_key, series_data in series.items():
+            selected = _resolve_dimensions(dim_ids, dim_values, series_key)
+            if selected is None or not (
+                selected.get("FREQ", {}).get("id") == FREQUENCY
+                and selected.get("INSTRUMENT_TYPE", {}).get("id") == "KPRA"
+                and selected.get("TENOR", {}).get("id") == "SD"
+                and selected.get("UNIT_MEASURE", {}).get("id") == "R"
+            ):
+                continue
+
+            latest = _latest_observation(
+                series_data.get("observations", {}),
+                time_dimension.get("values", []),
+            )
+            if latest is None:
+                continue
+
+            value, observation_date = latest
+            attributes = _resolve_attributes(
+                structure.get("attributes", {}).get("series", []),
+                series_data.get("attributes", []),
+            )
+            return PolicyRate(
+                value=value,
+                observation_date=observation_date,
+                decimal_places=_optional_int(attributes.get("DECIMALS", {}).get("id")),
+            )
+
+        raise NorgesBankResponseError("Policy-rate series is missing")
 
     async def _get_json(self, url: str) -> dict[str, Any]:
         try:
@@ -264,6 +308,51 @@ def _resolve_attributes(
             continue
 
     return resolved
+
+
+def _resolve_dimensions(
+    dimension_ids: list[str],
+    dimension_values: dict[str, list[dict[str, Any]]],
+    series_key: str,
+) -> dict[str, dict[str, Any]] | None:
+    """Resolve an SDMX series key to dimension values."""
+    key_parts = series_key.split(":")
+    if len(key_parts) != len(dimension_ids):
+        return None
+
+    selected: dict[str, dict[str, Any]] = {}
+    for dim_id, raw_index in zip(dimension_ids, key_parts, strict=True):
+        try:
+            selected[dim_id] = dimension_values[dim_id][int(raw_index)]
+        except (KeyError, TypeError, ValueError, IndexError):
+            return None
+    return selected
+
+
+def _latest_observation(
+    observations: dict[str, list[Any]],
+    time_values: list[dict[str, Any]],
+) -> tuple[float, str] | None:
+    """Return the latest valid SDMX observation and its date."""
+    valid: list[tuple[int, list[Any]]] = []
+    for raw_index, observation in observations.items():
+        try:
+            index = int(raw_index)
+        except (TypeError, ValueError):
+            continue
+        if observation and observation[0] is not None:
+            valid.append((index, observation))
+    if not valid:
+        return None
+
+    latest_index, observation = max(valid)
+    try:
+        time_value = time_values[latest_index]
+        return float(observation[0]), str(
+            time_value.get("id") or time_value.get("name") or ""
+        )
+    except (IndexError, TypeError, ValueError):
+        return None
 
 
 def _safe_int(value: Any, default: int) -> int:

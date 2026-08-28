@@ -5,7 +5,10 @@
       "user": {
         "title": "Norges Bank",
         "description": "Velg valutakursene du vil opprette som sensorer.",
-        "data": {"currencies": "Valutaer"},
+        "data": {
+          "currencies": "Valutaer",
+          "include_policy_rate": "Ta med styringsrenten"
+        },
         "data_description": {
           "currencies": "Listen hentes dynamisk fra Norges Banks EXR-datasett."
         }
@@ -15,21 +18,30 @@
       "already_configured": "Norges Bank er allerede konfigurert.",
       "cannot_connect": "Kunne ikke koble til Norges Bank."
     },
-    "error": {"select_currency": "Velg minst én valuta."}
+    "error": {
+      "select_currency": "Velg minst én valuta.",
+      "cannot_connect": "Kunne ikke hente valgte data fra Norges Bank."
+    }
   },
   "options": {
     "step": {
       "init": {
         "title": "Valutakurser",
         "description": "Velg hvilke valutakurser som skal være tilgjengelige som sensorer.",
-        "data": {"currencies": "Valutaer"},
+        "data": {
+          "currencies": "Valutaer",
+          "include_policy_rate": "Ta med styringsrenten"
+        },
         "data_description": {
           "currencies": "Sensorer legges til eller fjernes når valget lagres."
         }
       }
     },
     "abort": {"cannot_connect": "Kunne ikke koble til Norges Bank."},
-    "error": {"select_currency": "Velg minst én valuta."}
+    "error": {
+      "select_currency": "Velg minst én valuta.",
+      "cannot_connect": "Kunne ikke hente valgte data fra Norges Bank."
+    }
   },
   "issues": {
     "removed_currencies": {
@@ -41,6 +53,9 @@
     "sensor": {
       "exchange_rate": {
         "name": "Valutakurs {quote_currency}/{base_currency}"
+      },
+      "policy_rate": {
+        "name": "Styringsrente"
       }
     }
   }

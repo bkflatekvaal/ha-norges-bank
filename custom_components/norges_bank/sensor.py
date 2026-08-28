@@ -12,11 +12,15 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTR_BASE_AMOUNT,
+    ATTR_COLLECTION,
     ATTR_CURRENCY,
     ATTR_CURRENCY_NAME,
+    ATTR_INSTRUMENT_TYPE,
     ATTR_OBSERVATION_DATE,
     ATTR_QUOTE_CURRENCY,
     ATTR_SOURCE,
+    ATTR_TENOR,
+    ATTR_UNIT_MEASURE,
     DOMAIN,
     QUOTE_CURRENCY,
     SOURCE_NAME,
@@ -49,6 +53,8 @@ async def async_setup_entry(
         for code in coordinator.selected_currencies
         if code in coordinator.currencies
     )
+    if coordinator.include_policy_rate:
+        async_add_entities([NorgesBankPolicyRateSensor(coordinator)])
 
 
 class NorgesBankExchangeRateSensor(
@@ -99,6 +105,54 @@ class NorgesBankExchangeRateSensor(
             ATTR_CURRENCY_NAME: self.currency.name,
             ATTR_QUOTE_CURRENCY: QUOTE_CURRENCY,
             ATTR_BASE_AMOUNT: self.currency.base_amount,
+            ATTR_OBSERVATION_DATE: rate.observation_date if rate else None,
+            ATTR_SOURCE: SOURCE_NAME,
+        }
+
+
+class NorgesBankPolicyRateSensor(
+    CoordinatorEntity[NorgesBankCoordinator], SensorEntity
+):
+    """Latest Norges Bank policy rate."""
+
+    _attr_has_entity_name = True
+    _attr_icon = "mdi:sack-percent"
+    _attr_native_unit_of_measurement = "%"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_translation_key = "policy_rate"
+    _attr_unique_id = f"{DOMAIN}_policy_rate"
+
+    def __init__(self, coordinator: NorgesBankCoordinator) -> None:
+        """Initialize the policy-rate sensor."""
+        super().__init__(coordinator)
+        self.entity_id = "sensor.norges_bank_policy_rate"
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the latest published policy rate."""
+        rate = self.coordinator.policy_rate
+        return rate.value if rate else None
+
+    @property
+    def suggested_display_precision(self) -> int | None:
+        """Return the precision published by Norges Bank."""
+        rate = self.coordinator.policy_rate
+        return rate.decimal_places if rate else None
+
+    @property
+    def available(self) -> bool:
+        """Return whether the policy rate has a current value."""
+        return super().available and self.coordinator.policy_rate is not None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return useful source metadata."""
+        rate = self.coordinator.policy_rate
+        return {
+            ATTR_INSTRUMENT_TYPE: "KPRA",
+            ATTR_TENOR: "SD",
+            ATTR_UNIT_MEASURE: "R",
+            ATTR_COLLECTION: "E",
             ATTR_OBSERVATION_DATE: rate.observation_date if rate else None,
             ATTR_SOURCE: SOURCE_NAME,
         }

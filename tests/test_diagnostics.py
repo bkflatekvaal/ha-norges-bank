@@ -7,6 +7,7 @@ from homeassistant.core import HomeAssistant
 from custom_components.norges_bank.diagnostics import (
     async_get_config_entry_diagnostics,
 )
+from custom_components.norges_bank.models import PolicyRate
 
 
 async def test_config_entry_diagnostics(
@@ -19,6 +20,7 @@ async def test_config_entry_diagnostics(
     coordinator.selected_currencies = ["EUR", "SEK"]
     coordinator.currencies = currencies
     coordinator.data = rates
+    coordinator.policy_rate = PolicyRate(4.25, "2026-08-26", decimal_places=2)
     entry = MagicMock()
     entry.data = {"currencies": ["EUR", "SEK"]}
     entry.options = {}
@@ -35,4 +37,9 @@ async def test_config_entry_diagnostics(
     assert result["rates"]["EUR"] == {
         "value": 11.75,
         "observation_date": "2026-08-27",
+    }
+    assert result["policy_rate"] == {
+        "value": 4.25,
+        "observation_date": "2026-08-26",
+        "decimal_places": 2,
     }

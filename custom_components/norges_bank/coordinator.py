@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from homeassistant.config_entries import ConfigEntry
@@ -9,8 +10,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import NorgesBankApi, NorgesBankApiError
-from .const import CONF_CURRENCIES, DEFAULT_CURRENCIES, DOMAIN, UPDATE_INTERVAL
-from .models import CurrencyInfo, ExchangeRate
+from .const import (
+    CONF_CURRENCIES,
+    CONF_INCLUDE_POLICY_RATE,
+    DEFAULT_CURRENCIES,
+    DOMAIN,
+    UPDATE_INTERVAL,
+)
+from .models import CurrencyInfo, ExchangeRate, PolicyRate
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,6 +42,7 @@ class NorgesBankCoordinator(DataUpdateCoordinator[dict[str, ExchangeRate]]):
         self.entry = entry
         self.api = api
         self.currencies = currencies
+        self.policy_rate: PolicyRate | None = None
 
     @property
     def selected_currencies(self) -> list[str]:
@@ -45,12 +53,32 @@ class NorgesBankCoordinator(DataUpdateCoordinator[dict[str, ExchangeRate]]):
         )
         return [code for code in configured if code in self.currencies]
 
+    @property
+    def include_policy_rate(self) -> bool:
+        """Return whether the policy-rate sensor is enabled."""
+        return bool(
+            self.entry.options.get(
+                CONF_INCLUDE_POLICY_RATE,
+                self.entry.data.get(CONF_INCLUDE_POLICY_RATE, False),
+            )
+        )
+
     async def _async_update_data(self) -> dict[str, ExchangeRate]:
         try:
-            data = await self.api.async_get_latest_rates(
-                self.selected_currencies,
-                self.currencies,
-            )
+            if self.include_policy_rate:
+                data, self.policy_rate = await asyncio.gather(
+                    self.api.async_get_latest_rates(
+                        self.selected_currencies,
+                        self.currencies,
+                    ),
+                    self.api.async_get_policy_rate(),
+                )
+            else:
+                data = await self.api.async_get_latest_rates(
+                    self.selected_currencies,
+                    self.currencies,
+                )
+                self.policy_rate = None
         except NorgesBankApiError as err:
             raise UpdateFailed(f"Error communicating with Norges Bank: {err}") from err
 

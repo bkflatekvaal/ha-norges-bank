@@ -6,7 +6,8 @@
         "title": "Norges Bank",
         "description": "Select the exchange rates to create as sensors.",
         "data": {
-          "currencies": "Currencies"
+          "currencies": "Currencies",
+          "include_policy_rate": "Include the policy rate"
         },
         "data_description": {
           "currencies": "The list is loaded dynamically from Norges Bank's EXR dataset."
@@ -18,7 +19,8 @@
       "cannot_connect": "Could not connect to Norges Bank."
     },
     "error": {
-      "select_currency": "Select at least one currency."
+      "select_currency": "Select at least one currency.",
+      "cannot_connect": "Could not retrieve the selected data from Norges Bank."
     }
   },
   "options": {
@@ -27,7 +29,8 @@
         "title": "Exchange rates",
         "description": "Select which exchange rates should be available as sensors.",
         "data": {
-          "currencies": "Currencies"
+          "currencies": "Currencies",
+          "include_policy_rate": "Include the policy rate"
         },
         "data_description": {
           "currencies": "Sensors are added or removed after saving."
@@ -38,7 +41,8 @@
       "cannot_connect": "Could not connect to Norges Bank."
     },
     "error": {
-      "select_currency": "Select at least one currency."
+      "select_currency": "Select at least one currency.",
+      "cannot_connect": "Could not retrieve the selected data from Norges Bank."
     }
   },
   "issues": {
@@ -51,6 +55,9 @@
     "sensor": {
       "exchange_rate": {
         "name": "Exchange rate {quote_currency}/{base_currency}"
+      },
+      "policy_rate": {
+        "name": "Policy rate"
       }
     }
   }

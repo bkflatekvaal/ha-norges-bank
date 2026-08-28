@@ -51,6 +51,19 @@ async def test_get_latest_rates_parses_captured_response() -> None:
     assert {rate.observation_date for rate in result.values()} == {"2026-08-27"}
 
 
+async def test_get_policy_rate_selects_sd_series() -> None:
+    """The policy-rate parser should select SD, not the related OL or RR rates."""
+    fixture = Path(__file__).parent / "fixtures" / "policy_rate.json"
+    api = NorgesBankApi(MagicMock())
+    api._get_json = AsyncMock(return_value=json.loads(fixture.read_text("utf-8")))
+
+    result = await api.async_get_policy_rate()
+
+    assert result.value == 4.25
+    assert result.observation_date == "2026-08-26"
+    assert result.decimal_places == 2
+
+
 async def test_get_latest_rates_uses_combined_request_and_latest_valid_value(
     currencies: dict,
 ) -> None:

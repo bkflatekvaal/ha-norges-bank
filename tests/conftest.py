@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from custom_components.norges_bank.models import CurrencyInfo, ExchangeRate
+from custom_components.norges_bank.models import CurrencyInfo, ExchangeRate, PolicyRate
 
 
 @pytest.fixture(autouse=True)
@@ -41,4 +41,7 @@ def mock_api(
     with patch("custom_components.norges_bank.NorgesBankApi", autospec=True) as api:
         api.return_value.async_get_currencies.return_value = currencies
         api.return_value.async_get_latest_rates.return_value = rates
+        api.return_value.async_get_policy_rate.return_value = PolicyRate(
+            4.25, "2026-08-26", decimal_places=2
+        )
         yield api.return_value

@@ -1,0 +1,39 @@
+{
+  "data": {
+    "dataSets": [
+      {
+        "series": {
+          "0:0:0:0": {"attributes": [0, 0], "observations": {"0": ["5.25"]}},
+          "0:0:1:0": {"attributes": [0, 0], "observations": {"0": ["4.25"]}},
+          "0:0:2:0": {"attributes": [0, 0], "observations": {"0": ["3.25"]}}
+        }
+      }
+    ],
+    "structure": {
+      "dimensions": {
+        "series": [
+          {"id": "FREQ", "values": [{"id": "B", "name": "Virkedag"}]},
+          {"id": "INSTRUMENT_TYPE", "values": [{"id": "KPRA", "name": "Styringsrenten"}]},
+          {
+            "id": "TENOR",
+            "values": [
+              {"id": "OL", "name": "Døgnlånsrente"},
+              {"id": "SD", "name": "Styringsrenten"},
+              {"id": "RR", "name": "Reserverenten"}
+            ]
+          },
+          {"id": "UNIT_MEASURE", "values": [{"id": "R", "name": "Rente"}]}
+        ],
+        "observation": [
+          {"id": "TIME_PERIOD", "values": [{"id": "2026-08-26", "name": "2026-08-26"}]}
+        ]
+      },
+      "attributes": {
+        "series": [
+          {"id": "DECIMALS", "values": [{"id": "2"}]},
+          {"id": "COLLECTION", "values": [{"id": "E"}]}
+        ]
+      }
+    }
+  }
+}
