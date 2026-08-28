@@ -1,0 +1,44 @@
+{
+  "title": "Norges Bank",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Norges Bank",
+        "description": "Velg valutakursene du vil opprette som sensorer.",
+        "data": {
+          "currencies": "Valutaer"
+        },
+        "data_description": {
+          "currencies": "Listen hentes dynamisk fra Norges Banks EXR-datasett."
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Norges Bank er allerede konfigurert.",
+      "cannot_connect": "Kunne ikke koble til Norges Bank."
+    },
+    "error": {
+      "select_currency": "Velg minst én valuta."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Valutakurser",
+        "description": "Velg hvilke valutakurser som skal være tilgjengelige som sensorer.",
+        "data": {
+          "currencies": "Valutaer"
+        },
+        "data_description": {
+          "currencies": "Sensorer legges til eller fjernes når valget lagres."
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Kunne ikke koble til Norges Bank."
+    },
+    "error": {
+      "select_currency": "Velg minst én valuta."
+    }
+  }
+}

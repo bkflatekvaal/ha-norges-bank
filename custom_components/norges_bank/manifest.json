@@ -1,0 +1,14 @@
+{
+  "domain": "norges_bank",
+  "name": "Norges Bank",
+  "codeowners": [
+    "@bkflatekvaal"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/bkflatekvaal/ha-norges-bank",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}

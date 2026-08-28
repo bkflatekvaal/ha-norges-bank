@@ -1,0 +1,44 @@
+{
+  "title": "Norges Bank",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Norges Bank",
+        "description": "Select the exchange rates to create as sensors.",
+        "data": {
+          "currencies": "Currencies"
+        },
+        "data_description": {
+          "currencies": "The list is loaded dynamically from Norges Bank's EXR dataset."
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Norges Bank is already configured.",
+      "cannot_connect": "Could not connect to Norges Bank."
+    },
+    "error": {
+      "select_currency": "Select at least one currency."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Exchange rates",
+        "description": "Select which exchange rates should be available as sensors.",
+        "data": {
+          "currencies": "Currencies"
+        },
+        "data_description": {
+          "currencies": "Sensors are added or removed after saving."
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Could not connect to Norges Bank."
+    },
+    "error": {
+      "select_currency": "Select at least one currency."
+    }
+  }
+}
