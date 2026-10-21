@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Correct the duplicate-setup test to expect Home Assistant's built-in
+  `single_instance_allowed` abort reason.
+- Temporarily omit the optional Marketplace category because the published
+  Hassfest validator rejects the `categories` manifest field. Restore Finance
+  when the validator supports it.
+
 ## v0.1.1
 
 Patch release prepared on 2026-10-21. Requires Home Assistant 2026.8.0 or newer.

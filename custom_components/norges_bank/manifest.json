@@ -1,9 +1,6 @@
 {
   "domain": "norges_bank",
   "name": "Norges Bank",
-  "categories": [
-    "finance"
-  ],
   "codeowners": [
     "@bkflatekvaal"
   ],
