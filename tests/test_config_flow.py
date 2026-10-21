@@ -113,7 +113,7 @@ async def test_user_flow_connection_error(hass: HomeAssistant) -> None:
 
 
 async def test_user_flow_aborts_if_already_configured(hass: HomeAssistant) -> None:
-    """Only one Norges Bank config entry is allowed."""
+    """HA enforces single_config_entry before invoking the integration flow."""
     MockConfigEntry(domain=DOMAIN, unique_id=DOMAIN).add_to_hass(hass)
 
     result = await hass.config_entries.flow.async_init(
@@ -121,7 +121,8 @@ async def test_user_flow_aborts_if_already_configured(hass: HomeAssistant) -> No
     )
 
     assert result["type"] is FlowResultType.ABORT
-    assert result["reason"] == "already_configured"
+    assert result["reason"] == "single_instance_allowed"
+    assert result["translation_domain"] == "homeassistant"
 
 
 async def test_options_flow(hass: HomeAssistant, currencies: dict) -> None:
