@@ -9,6 +9,7 @@ import pytest
 from custom_components.norges_bank.api import (
     NorgesBankApi,
     NorgesBankResponseError,
+    _latest_observation,
     _resolve_attributes,
 )
 
@@ -148,3 +149,20 @@ def test_resolve_attributes_ignores_invalid_indexes() -> None:
     """Malformed optional attributes should not break the response."""
     definitions = [{"id": "UNIT_MULT", "values": [{"id": "2"}]}]
     assert _resolve_attributes(definitions, [99]) == {}
+
+
+@pytest.mark.parametrize("invalid_value", ["invalid", "NaN", "Infinity", None])
+def test_latest_observation_skips_invalid_values(invalid_value) -> None:
+    """An invalid newest value must not hide an older valid quotation."""
+    assert _latest_observation(
+        {"0": [11.7], "1": [invalid_value], "99": [99], "-1": [99]},
+        [{"id": "2026-08-26"}, {"id": "2026-08-27"}],
+    ) == (11.7, "2026-08-26")
+
+
+def test_latest_observation_uses_date_order() -> None:
+    """SDMX indexes describe positions, not chronological order."""
+    assert _latest_observation(
+        {"0": [11.8], "1": [11.7]},
+        [{"id": "2026-08-27"}, {"id": "2026-08-26"}],
+    ) == (11.8, "2026-08-27")

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from datetime import date, timedelta
 from typing import Any
 
@@ -334,25 +335,26 @@ def _latest_observation(
     time_values: list[dict[str, Any]],
 ) -> tuple[float, str] | None:
     """Return the latest valid SDMX observation and its date."""
-    valid: list[tuple[int, list[Any]]] = []
+    valid: list[tuple[str, float]] = []
     for raw_index, observation in observations.items():
         try:
             index = int(raw_index)
-        except (TypeError, ValueError):
+            if index < 0 or not observation or observation[0] is None:
+                continue
+            value = float(observation[0])
+            time_value = time_values[index]
+            observation_date = date.fromisoformat(
+                time_value.get("id") or time_value.get("name") or ""
+            ).isoformat()
+        except (IndexError, KeyError, TypeError, ValueError, OverflowError):
             continue
-        if observation and observation[0] is not None:
-            valid.append((index, observation))
+        if math.isfinite(value):
+            valid.append((observation_date, value))
     if not valid:
         return None
 
-    latest_index, observation = max(valid)
-    try:
-        time_value = time_values[latest_index]
-        return float(observation[0]), str(
-            time_value.get("id") or time_value.get("name") or ""
-        )
-    except (IndexError, TypeError, ValueError):
-        return None
+    observation_date, value = max(valid)
+    return value, observation_date
 
 
 def _safe_int(value: Any, default: int) -> int:

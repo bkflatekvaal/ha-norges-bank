@@ -6,8 +6,16 @@ requires-python = ">=3.14.2"
 [project.optional-dependencies]
 test = [
   "homeassistant==2026.8.0",
-  "pytest-homeassistant-custom-component",
+  "pytest-homeassistant-custom-component==0.13.354",
+  "ruff==0.16.1",
 ]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["custom_components*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -1,85 +1,68 @@
 # Norges Bank for Home Assistant
 
-Custom Home Assistant integration for exchange rates from Norges Bank's open EXR API.
+Follow exchange rates and the Norwegian policy rate (styringsrenten) in Home Assistant using public data from Norges Bank. No account or API key is needed.
 
-## What it does
+Requires **Home Assistant 2026.8.0 or newer**.
 
-- UI/config-flow only; no YAML configuration.
-- Loads the current list of available currencies dynamically from Norges Bank metadata.
-- Lets the user select multiple currencies.
-- Creates one sensor per selected currency.
-- Uses one combined EXR request for all selected currencies.
-- Uses Norges Bank's published quotation unchanged, including 100-unit quotations such as SEK/DKK where applicable.
-- Stores the quotation amount in the `base_amount` attribute.
-- Uses the latest available business-day observation and keeps the observation date as an attribute.
-- Currency selection can be changed later through **Configure**.
-- Polls every 6 hours.
-- Uses Norges Bank's published decimal precision as the initial display precision.
-- Provides downloadable diagnostics from the integration menu.
-- Creates a repair notification if a selected currency disappears from the API.
-- Can optionally create a sensor for Norges Bank's policy rate (styringsrenten).
+## Features
 
-Example entity:
+- Choose the currencies you want to follow, with one sensor per currency.
+- Optionally include a policy-rate sensor.
+- Updates automatically every six hours.
+- Shows the latest published observation and its date, including over weekends and holidays.
+- Available in English and Norwegian Bokm?l.
 
-- `sensor.exchange_rate_nok_eur`
-- Friendly name: `Exchange rate NOK/EUR` (localized by Home Assistant)
-- State: latest Norges Bank quotation
-- Unit: `NOK`
-- Attributes: currency, currency name, quote currency, base amount, observation date and source.
-
-Optional policy-rate entity:
-
-- `sensor.norges_bank_policy_rate`
-- Friendly name: `Policy rate` / `Styringsrente`
-- State: latest published policy rate
-- Unit: `%`
-- Attributes: instrument type (`KPRA`), tenor (`SD`), unit measure (`R`), collection (`E`), observation date and source.
+Rates are quoted in Norwegian kroner (NOK). Some currencies are quoted per **100 units**, rather than per unit. The sensor's `base_amount` attribute shows the amount used by Norges Bank.
 
 ## Installation
 
-### HACS
+### With HACS
 
-1. Install and configure [HACS](https://hacs.xyz/) if it is not already available.
-2. Open HACS in Home Assistant.
-3. Open the menu in the upper-right corner and select **Custom repositories**.
-4. Enter `https://github.com/bkflatekvaal/ha-norges-bank` as the repository URL.
-5. Select **Integration** as the category, then select **Add**.
-6. Find **Norges Bank** in HACS and select **Download**.
-7. Restart Home Assistant.
-8. Go to **Settings → Devices & services → Add integration**, search for **Norges Bank**, and select the currencies to monitor.
+For now, add this integration as a custom repository in [HACS](https://hacs.xyz/).
+
+1. Open **HACS** in Home Assistant.
+2. Open the menu and select **Custom repositories**.
+3. Enter `https://github.com/bkflatekvaal/ha-norges-bank` and select **Integration** as the category.
+4. Select **Add**, then find **Norges Bank** in HACS and download it.
+5. Restart Home Assistant.
+6. Follow the setup instructions below.
 
 ### Manual installation
 
-1. Download this repository from [GitHub](https://github.com/bkflatekvaal/ha-norges-bank).
-2. Copy `custom_components/norges_bank` into `<config>/custom_components/norges_bank` on the Home Assistant system.
+1. Download the code from [this repository](https://github.com/bkflatekvaal/ha-norges-bank) and extract it.
+2. Copy the `custom_components/norges_bank` folder into the `custom_components` folder in your Home Assistant configuration directory. Create `custom_components` if it does not exist.
 3. Restart Home Assistant.
-4. Go to **Settings → Devices & services → Add integration**, search for **Norges Bank**, and select the currencies to monitor.
+4. Follow the setup instructions below.
 
-To update a manual installation, replace the existing `custom_components/norges_bank` directory with the directory from the new release and restart Home Assistant.
+## Setup
 
-## Run tests
+1. Go to **Settings > Devices & services > Add integration**.
+2. Search for **Norges Bank**.
+3. Select the currencies you want to follow and whether to include the policy rate.
 
-Home Assistant 2026.8 requires Python 3.14.2 or newer.
+To change your selection later, open **Settings > Devices & services > Norges Bank > Configure**. No YAML configuration is needed.
 
-```shell
-python -m pip install -e ".[test]"
-pytest
-ruff check .
-ruff format --check .
-```
+Example sensors:
 
-## API endpoints
+| Sensor | What it shows |
+| --- | --- |
+| `sensor.exchange_rate_nok_eur` | The latest published EUR quotation in NOK |
+| `sensor.norges_bank_policy_rate` | The latest published policy rate in percent |
 
-Metadata:
+## Updates
 
-`https://data.norges-bank.no/api/data/EXR/?format=sdmx-json&detail=nodata&locale=no`
+With HACS, download available updates from HACS and restart Home Assistant.
 
-Rates are requested as one combined series, for example:
+For a manual installation, replace the `custom_components/norges_bank` folder with the updated folder and restart Home Assistant.
 
-`https://data.norges-bank.no/api/data/EXR/B.EUR+GBP+USD.NOK.SP?...`
+## Help and diagnostics
 
-The parser intentionally resolves SDMX dimensions and attributes by their IDs rather than relying on fixed positions where possible.
+If data is unavailable, check your internet connection. The integration retries temporary connection failures automatically. If a selected currency is no longer offered, Home Assistant shows a repair notification.
 
-## License
+You can download diagnostics from the integration menu when reporting a problem. The integration includes selected currencies, public rate data and update status, and excludes raw configuration and error messages. Home Assistant also adds standard system information, including the time zone and installed custom integrations.
 
-This project is licensed under the [MIT License](LICENSE).
+Report problems in [GitHub Issues](https://github.com/bkflatekvaal/ha-norges-bank/issues).
+
+## Changelog and license
+
+See the [changelog](CHANGELOG.md) for changes. This project uses the [MIT License](LICENSE).

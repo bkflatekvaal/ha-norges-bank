@@ -10,6 +10,28 @@ on:
 permissions: {}
 
 jobs:
+  tests:
+    name: Tests and lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install test dependencies
+        run: python -m pip install -e ".[test]"
+      - name: Check code style
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Run tests
+        run: pytest -q
+
   hassfest:
     name: Hassfest
     runs-on: ubuntu-latest

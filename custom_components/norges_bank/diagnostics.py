@@ -16,14 +16,15 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     coordinator = entry.runtime_data
     return {
-        "entry": {
-            "data": dict(entry.data),
-            "options": dict(entry.options),
+        # Export effective settings, never the entry dictionaries: future fields
+        # may contain credentials or other private configuration.
+        "configuration": {
+            "include_policy_rate": coordinator.include_policy_rate,
         },
         "coordinator": {
             "last_update_success": coordinator.last_update_success,
             "last_exception": (
-                str(coordinator.last_exception)
+                type(coordinator.last_exception).__name__
                 if coordinator.last_exception is not None
                 else None
             ),
@@ -42,7 +43,7 @@ async def async_get_config_entry_diagnostics(
                 "value": rate.value,
                 "observation_date": rate.observation_date,
             }
-            for code, rate in coordinator.data.items()
+            for code, rate in (coordinator.data or {}).items()
         },
         "policy_rate": (
             {
