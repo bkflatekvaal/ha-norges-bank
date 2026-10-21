@@ -52,7 +52,8 @@ async def test_setup_entry_creates_issue_for_removed_currency(
         patch("custom_components.norges_bank.ir.async_create_issue") as create_issue,
         patch.object(hass.config_entries, "async_forward_entry_setups"),
     ):
-        await async_setup_entry(hass, entry)
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
 
     assert entry.runtime_data.selected_currencies == ["EUR"]
     create_issue.assert_called_once()
@@ -72,6 +73,7 @@ async def test_setup_entry_clears_removed_currency_issue(
         patch("custom_components.norges_bank.ir.async_delete_issue") as delete_issue,
         patch.object(hass.config_entries, "async_forward_entry_setups"),
     ):
-        await async_setup_entry(hass, entry)
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
 
     delete_issue.assert_called_once_with(hass, DOMAIN, "removed_currencies")

@@ -10,7 +10,7 @@ Requires **Home Assistant 2026.8.0 or newer**.
 - Optionally include a policy-rate sensor.
 - Updates automatically every six hours.
 - Shows the latest published observation and its date, including over weekends and holidays.
-- Available in English and Norwegian Bokm?l.
+- Available in English and Norwegian Bokmål.
 
 Rates are quoted in Norwegian kroner (NOK). Some currencies are quoted per **100 units**, rather than per unit. The sensor's `base_amount` attribute shows the amount used by Norges Bank.
 
@@ -35,6 +35,8 @@ For now, add this integration as a custom repository in [HACS](https://hacs.xyz/
 4. Follow the setup instructions below.
 
 ## Setup
+
+After installation, [set up Norges Bank in Home Assistant](https://my.home-assistant.io/redirect/config_flow_start/?domain=norges_bank), or follow these steps:
 
 1. Go to **Settings > Devices & services > Add integration**.
 2. Search for **Norges Bank**.

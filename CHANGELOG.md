@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.1.1
+
+Patch release prepared on 2026-10-21. Requires Home Assistant 2026.8.0 or newer.
+
+- Add the Finance category for Marketplace discovery and a direct integration
+  setup link in the README.
+- Fix CI installation so Home Assistant scans real directories instead of
+  editable-install import hooks.
+- Run repair-notification setup tests through Home Assistant's config-entry
+  lifecycle.
+- Correct the Norwegian Bokmål spelling in the README.
+
+No changes to exchange-rate or policy-rate sensor behavior. Existing
+configuration is preserved.
+
 ## v0.1.0
 
 First release, prepared on 2026-10-21. Requires Home Assistant 2026.8.0 or newer.

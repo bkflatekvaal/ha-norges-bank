@@ -1,6 +1,9 @@
 {
   "domain": "norges_bank",
   "name": "Norges Bank",
+  "categories": [
+    "finance"
+  ],
   "codeowners": [
     "@bkflatekvaal"
   ],
@@ -11,5 +14,5 @@
   "issue_tracker": "https://github.com/bkflatekvaal/ha-norges-bank/issues",
   "requirements": [],
   "single_config_entry": true,
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
