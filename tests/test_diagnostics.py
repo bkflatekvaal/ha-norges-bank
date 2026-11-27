@@ -71,6 +71,7 @@ async def test_diagnostics_excludes_private_configuration_and_errors(
     entry.data = {
         "currencies": ["EUR"],
         "password": "secret-password",
+        "account_id": "private-account-id",
         "future_field": {"nested": "private-user"},
     }
     entry.options = {"token": "secret-token", "host": "192.168.1.42"}
@@ -87,6 +88,7 @@ async def test_diagnostics_excludes_private_configuration_and_errors(
     for private_value in (
         "private-user",
         "secret-password",
+        "private-account-id",
         "secret-token",
         "192.168.1.42",
         "private-title",

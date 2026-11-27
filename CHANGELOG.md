@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.4 - 2026-11-27
+
+Requires Home Assistant 2026.8.0 or newer.
+
+- Restore the Finance discovery category supported by current validators.
+- Declare Norway as the target country in Marketplace metadata.
+- Match catalog admission checks by treating brand-image warnings as CI failures.
+- Explicitly cover account identifiers in the diagnostics privacy regression test.
+- Record lessons from earlier catalog reviews and update submission evidence.
+
+No changes to sensor behavior or existing configuration.
+
 ## v0.1.3 - 2026-11-27
 
 Requires Home Assistant 2026.8.0 or newer. Marketplace installation requires

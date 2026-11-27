@@ -41,8 +41,17 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
-      - name: Validate integration
-        uses: home-assistant/actions/hassfest@master
+      - name: Validate integration and brand images
+        # Match hacs/default: custom-integration brand warnings block admission.
+        shell: bash
+        run: |
+          set -o pipefail
+          docker run --rm \
+            -v "${{ github.workspace }}:/github/workspace" \
+            ghcr.io/home-assistant/hassfest:latest | tee /tmp/hassfest.log
+          if grep -F "[WARNING] [BRAND_IMAGES]" /tmp/hassfest.log; then
+            exit 1
+          fi
 
   marketplace:
     name: Marketplace
