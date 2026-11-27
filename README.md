@@ -14,17 +14,23 @@ Requires **Home Assistant 2026.8.0 or newer**.
 
 Rates are quoted in Norwegian kroner (NOK). Some currencies are quoted per **100 units**, rather than per unit. The sensor's `base_amount` attribute shows the amount used by Norges Bank.
 
+<!-- ha-marketplace:exclude-start -->
+
 ## Installation
 
-### With HACS
+### With Marketplace
 
-For now, add this integration as a custom repository in [HACS](https://hacs.xyz/).
+Marketplace is built into **Home Assistant 2026.11 or newer**. The integration itself supports Home Assistant 2026.8.0 or newer through manual installation.
 
-1. Open **HACS** in Home Assistant.
+For now, add this integration as a custom repository in [Marketplace](https://www.home-assistant.io/integrations/marketplace/).
+
+[![Open Norges Bank in Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=bkflatekvaal&repository=ha-norges-bank&category=integration)
+
+1. Open **Settings > Marketplace** in Home Assistant.
 2. Open the menu and select **Custom repositories**.
 3. Enter `https://github.com/bkflatekvaal/ha-norges-bank` and select **Integration** as the category.
-4. Select **Add**, then find **Norges Bank** in HACS and download it.
-5. Restart Home Assistant.
+4. Select **Add**, then open **Norges Bank** in Marketplace and select **Install**.
+5. Restart Home Assistant if prompted by Marketplace.
 6. Follow the setup instructions below.
 
 ### Manual installation
@@ -33,6 +39,8 @@ For now, add this integration as a custom repository in [HACS](https://hacs.xyz/
 2. Copy the `custom_components/norges_bank` folder into the `custom_components` folder in your Home Assistant configuration directory. Create `custom_components` if it does not exist.
 3. Restart Home Assistant.
 4. Follow the setup instructions below.
+
+<!-- ha-marketplace:exclude-end -->
 
 ## Setup
 
@@ -53,7 +61,7 @@ Example sensors:
 
 ## Updates
 
-With HACS, download available updates from HACS and restart Home Assistant.
+With Marketplace, install available updates from **Settings > Marketplace** and restart Home Assistant when prompted.
 
 For a manual installation, replace the `custom_components/norges_bank` folder with the updated folder and restart Home Assistant.
 

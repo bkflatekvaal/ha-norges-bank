@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.3 - 2026-11-27
+
+Requires Home Assistant 2026.8.0 or newer. Marketplace installation requires
+Home Assistant 2026.11 or newer.
+
+- Add white icons and logos for dark mode, preserving the original transparency
+  and dimensions in both standard and high-resolution variants.
+- Use Marketplace terminology and current installation and update instructions.
+- Add a direct Marketplace installation link and hide installation instructions
+  in Marketplace versions that support README exclusion markers.
+- Rename the repository validation job to Marketplace; retain the required
+  upstream validator and metadata filename.
+- Document catalog submission requirements and the brand image audit.
+
+No changes to sensor behavior or existing configuration.
+
 ## v0.1.2 — 2026-10-21
 
 Requires Home Assistant 2026.8.0 or newer.
@@ -47,7 +63,7 @@ First release, prepared on 2026-10-21. Requires Home Assistant 2026.8.0 or newer
 - Repair notifications when selected currencies disappear from the API, and
   retry handling for temporary connection failures.
 - Downloadable diagnostics with public rate data and update status.
-- HACS metadata, integration icons and logos, installation instructions, and an
+- Marketplace metadata, integration icons and logos, installation instructions, and an
   MIT license.
 
 ### Fixes and privacy
@@ -69,7 +85,7 @@ integrations.
 
 - Tests cover API parsing, configuration, setup, coordinator updates, sensors and
   diagnostics, including regression tests for private data in diagnostics.
-- GitHub Actions includes HACS validation, Hassfest, Python tests and Ruff checks.
+- GitHub Actions includes Marketplace validation, Hassfest, Python tests and Ruff checks.
 - The Home Assistant test plugin is pinned to match Home Assistant 2026.8.0.
 - Explicit package discovery and test dependencies support editable installs
   with the test extras.
@@ -84,6 +100,6 @@ All five commits are dated 2026-08-28.
 | --- | --- |
 | [27b8e70](https://github.com/bkflatekvaal/ha-norges-bank/commit/27b8e70f93b1e08ab76509ba137c0e01515a71d7) | Added the optional policy-rate sensor, configuration toggle, API parsing and tests. |
 | [18dfe8e](https://github.com/bkflatekvaal/ha-norges-bank/commit/18dfe8ebeca8b040522ace6d3409b2b2e8de3119) | Added the MIT license, localized entity names, stable sensor IDs and issue-tracker link. |
-| [7063567](https://github.com/bkflatekvaal/ha-norges-bank/commit/7063567626d069809f1152491e65b61f1c6da577) | Added tests, diagnostics, repair notifications, HACS/Hassfest validation, brand assets and published display precision. |
-| [1a3c748](https://github.com/bkflatekvaal/ha-norges-bank/commit/1a3c748a988e576e235d2db0f8af28eb62d581d6) | Implemented the exchange-rate integration, UI configuration, combined requests, six-hour polling, sensors, translations and HACS metadata. |
+| [7063567](https://github.com/bkflatekvaal/ha-norges-bank/commit/7063567626d069809f1152491e65b61f1c6da577) | Added tests, diagnostics, repair notifications, Marketplace/Hassfest validation, brand assets and published display precision. |
+| [1a3c748](https://github.com/bkflatekvaal/ha-norges-bank/commit/1a3c748a988e576e235d2db0f8af28eb62d581d6) | Implemented the exchange-rate integration, UI configuration, combined requests, six-hour polling, sensors, translations and Marketplace metadata. |
 | [2f425bf](https://github.com/bkflatekvaal/ha-norges-bank/commit/2f425bfc868af65957b4eeaec8700e9305504f85) | Initialized the repository with Git attributes. |

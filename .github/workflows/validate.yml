@@ -44,11 +44,13 @@ jobs:
       - name: Validate integration
         uses: home-assistant/actions/hassfest@master
 
-  hacs:
-    name: HACS
+  marketplace:
+    name: Marketplace
     runs-on: ubuntu-latest
     steps:
-      - name: Validate repository
+      - name: Validate Marketplace repository
+        # Marketplace still uses this upstream validator and hacs.json.
         uses: hacs/action@main
         with:
           category: integration
+          comment: false
